@@ -21,6 +21,7 @@ final class NetworkManager {
     }
     
     class func request<T: Decodable>(endpoint: API) async throws -> T {
+    static func request<T: Decodable>(endpoint: API) async throws -> T {
         let components = constructURL(with: endpoint)
         guard let url = components.url else {
             throw LantanaAPIError.invalidURL
