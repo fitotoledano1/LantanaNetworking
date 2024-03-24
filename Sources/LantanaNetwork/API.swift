@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol API {
+public protocol API {
     var scheme: HTTPScheme { get }
     var baseURL: String { get }
     var path: String { get }

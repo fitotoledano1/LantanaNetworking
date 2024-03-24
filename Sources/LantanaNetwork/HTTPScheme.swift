@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum HTTPScheme: String {
+public enum HTTPScheme: String {
     case http
     case https
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum LantanaAPIError: String, Error {
+public enum LantanaAPIError: String, Error {
     case invalidURL
     case invalidResponse
     case invalidData

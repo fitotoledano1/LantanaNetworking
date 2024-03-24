@@ -3,7 +3,7 @@
 
 import Foundation
 
-final class NetworkManager {
+public final class NetworkManager {
     private class func constructURL(with endpoint: API) -> URLComponents {
         var components = URLComponents()
         components.scheme = endpoint.scheme.rawValue
