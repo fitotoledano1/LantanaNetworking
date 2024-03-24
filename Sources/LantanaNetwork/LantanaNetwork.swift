@@ -14,13 +14,12 @@ final class NetworkManager {
     }
     
     static var decoder: JSONDecoder {
-        var ftDecoder = JSONDecoder()
+        let ftDecoder = JSONDecoder()
         ftDecoder.keyDecodingStrategy = .convertFromSnakeCase
         ftDecoder.dateDecodingStrategy = .iso8601
         return ftDecoder
     }
     
-    class func request<T: Decodable>(endpoint: API) async throws -> T {
     static func request<T: Decodable>(endpoint: API) async throws -> T {
         let components = constructURL(with: endpoint)
         guard let url = components.url else {
