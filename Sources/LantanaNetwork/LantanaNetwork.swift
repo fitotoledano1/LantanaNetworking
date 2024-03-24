@@ -13,14 +13,14 @@ public final class NetworkManager {
         return components
     }
     
-    static var decoder: JSONDecoder {
+    public static var decoder: JSONDecoder {
         let ftDecoder = JSONDecoder()
         ftDecoder.keyDecodingStrategy = .convertFromSnakeCase
         ftDecoder.dateDecodingStrategy = .iso8601
         return ftDecoder
     }
     
-    static func request<T: Decodable>(endpoint: API) async throws -> T {
+    public static func request<T: Decodable>(endpoint: API) async throws -> T {
         let components = constructURL(with: endpoint)
         guard let url = components.url else {
             throw LantanaAPIError.invalidURL
