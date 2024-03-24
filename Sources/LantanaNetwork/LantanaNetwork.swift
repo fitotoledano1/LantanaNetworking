@@ -31,7 +31,7 @@ final class NetworkManager {
         
         let session = URLSession(configuration: .default)
         let (data, response) = try await URLSession.shared.data(for: urlRequest)
-        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+        guard let response = response as? HTTPURLResponse, (200...300).contains(response.statusCode) else {
             throw LantanaAPIError.invalidResponse
         }
         
