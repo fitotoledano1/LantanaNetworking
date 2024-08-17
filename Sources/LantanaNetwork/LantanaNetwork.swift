@@ -4,13 +4,19 @@
 import Foundation
 
 public final class NetworkManager {
-    private class func constructURL(with endpoint: API) -> URLComponents {
-        var components = URLComponents()
-        components.scheme = endpoint.scheme.rawValue
-        components.host = endpoint.baseURL
-        components.path = endpoint.path
-        components.queryItems = endpoint.parameters
-        return components
+    
+    private let session: URLSession
+    private let baseURL: URL
+
+    public init(baseURL: URL, session: URLSession = .shared) {
+        self.session = session
+        self.baseURL = baseURL
+    }
+    
+    private func constructURL(with endpoint: API) -> URL {
+        baseURL
+            .appendingPathComponent(endpoint.path)
+            .appending(queryItems: endpoint.parameters)
     }
     
     public static var decoder: JSONDecoder {
@@ -20,21 +26,24 @@ public final class NetworkManager {
         return ftDecoder
     }
     
-    public static func request<T: Decodable>(endpoint: API) async throws -> T {
-        let components = constructURL(with: endpoint)
-        guard let url = components.url else {
-            throw LantanaAPIError.invalidURL
-        }
+    public func request<T: Decodable>(endpoint: API) async throws -> T {
+        let url = constructURL(with: endpoint)
         
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = endpoint.method.rawValue
         
         let (data, response) = try await URLSession.shared.data(for: urlRequest)
-        guard let response = response as? HTTPURLResponse, (200...300).contains(response.statusCode) else {
-            throw LantanaAPIError.invalidResponse
+        guard let response = response as? HTTPURLResponse else {
+            throw NetworkError.invalidResponse
         }
-        
-        let object = try NetworkManager.decoder.decode(T.self, from: data)
-        return object
+
+        switch response.statusCode {
+        case 200...300: 
+            let object = try NetworkManager.decoder.decode(T.self, from: data)
+            return object
+        case 400...500: throw NetworkError.clientError(statusCode: response.statusCode)
+        case 500...600: throw NetworkError.serverError(statusCode: response.statusCode)
+        default: throw NetworkError.invalidResponse
+        }
     }
 }
