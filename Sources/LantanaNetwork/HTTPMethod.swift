@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 public enum HTTPMethod: String {
     case delete = "DELETE"
